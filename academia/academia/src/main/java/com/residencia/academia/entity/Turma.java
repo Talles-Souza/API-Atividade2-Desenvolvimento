@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -27,15 +28,19 @@ public class Turma {
 	private Integer idTurma;
 
 	@Column(name = "horario")
+	@NotBlank(message = "Horário não informado")
 	private Date horarioTurma;
 
 	@Column(name = "duracao")
+	@NotBlank(message = "Duração não informada")
 	private Integer duracaoTurma;
 
 	@Column(name = "data_inicio")
+	@NotBlank(message = "Data não informada")
 	private Date dataInicio;
 
 	@Column(name = "data_fim")
+	@NotBlank(message = "Data não informada")
 	private Date dataFim;
 
 	@ManyToOne

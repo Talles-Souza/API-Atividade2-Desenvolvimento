@@ -1,0 +1,43 @@
+1 - Adicione a dependancy
+
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-validation</artifactId>
+</dependency>
+
+2 - Fazer validação nas Entities
+
+Ex:
+@Column(name = "nome")
+	@NotBlank(message = "Campo não informado")
+	@Pattern(regexp = "^[A-Z]+(.)*", message = "O nome não pode começar com letras minúsculas.")
+	private String nomeAtividade;
+
+3 - Adicionar @Valid nas classes controller
+
+Ex:
+
+@PutMapping
+	public ResponseEntity<Atividade> updateAtividade(@RequestBody @Valid Atividade atividade) {
+		return new ResponseEntity<>(atividadeService.updateAtividade(atividade), HttpStatus.OK);
+	}
+
+4 - Adicionar validação nos controllers
+
+Ex:
+
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public Map<String, String> handleValidationException(MethodArgumentNotValidException ex){
+			Map<String, String> errors = new HashMap<>();
+		
+			ex.getBindingResult().getAllErrors().forEach((error) -> {
+				String fieldName = ((FieldError) error).getField();
+				String errorMessage = error.getDefaultMessage();
+				errors.put(fieldName, errorMessage);
+			});
+			
+		return errors;
+	}
+
+5 - Testar no Insomnia e corrrigir futuros bugs.

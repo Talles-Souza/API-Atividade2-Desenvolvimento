@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -26,20 +28,26 @@ public class Instrutor {
 	private Integer idInstrutor;
 
 	@Column(name = "rg")
+	@NotBlank(message = "RG não informado")
 	private Integer rg;
 
 	@Column(name = "nome")
+	@NotBlank(message = "Nome não informado")
+	@Pattern(regexp = "^[A-Z]+(.)*", message = "O nome não pode começar com letras minúsculas.")
 	private String nomeInstrutor;
 
 	@Column(name = "nascimento")
+	@NotBlank(message = "Data não informada")
 	private Date dataNascimento;
 
 	@Column(name = "titulacao")
+	@NotBlank(message = "Titulação não informada")
 	private Integer titulacaoInstrutor;
 
 	@OneToMany(mappedBy = "instrutor")
 	//@JsonManagedReference
 	//@JsonIgnore
+	//@NotBlank(message = "Campo não informado")
 	private List<Turma> turmaList;
 
 	public Integer getIdInstrutor() {

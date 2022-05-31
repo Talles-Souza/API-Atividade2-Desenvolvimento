@@ -1,17 +1,25 @@
 package com.residencia.academia.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.residencia.academia.dto.InstrutorDTO;
@@ -55,18 +63,18 @@ public class TurmaController {
 			return new ResponseEntity<>(turmaDTO, HttpStatus.OK);
 	}
 	@PostMapping("/dto")
-	public ResponseEntity<TurmaDTO> saveTurmaDTO(@RequestBody TurmaDTO turmaDto) {
+	public ResponseEntity<TurmaDTO> saveTurmaDTO(@RequestBody @Valid TurmaDTO turmaDto) {
 		TurmaDTO turmaDTO = turmaService.saveTurmaDTO(turmaDto);
 		return new ResponseEntity<>(turmaDTO, HttpStatus.CREATED);
 	}
 
 	@PostMapping
-	public ResponseEntity<Turma> saveTurma(@RequestBody Turma turma) {
+	public ResponseEntity<Turma> saveTurma(@RequestBody @Valid Turma turma) {
 		return new ResponseEntity<>(turmaService.saveTurma(turma), HttpStatus.CREATED);
 	}
 
 	@PutMapping
-	public ResponseEntity<Turma> updateTurma(@RequestBody Turma turma) {
+	public ResponseEntity<Turma> updateTurma(@RequestBody @Valid Turma turma) {
 		Turma turma1 = turmaService.findTurmaById(turma.getIdTurma());
 		if(null == turma1) 
 			throw new NoSuchElementFoundException("Não foi possivel atualizar a Turma ");
@@ -85,7 +93,22 @@ public class TurmaController {
 			return new ResponseEntity<>("", HttpStatus.OK);
 	
 	}
+	//Validação
 	
+		@ResponseStatus(HttpStatus.BAD_REQUEST)
+		@ExceptionHandler(MethodArgumentNotValidException.class)
+		public Map<String, String> handleValidationException(MethodArgumentNotValidException ex){
+				Map<String, String> errors = new HashMap<>();
+			
+				ex.getBindingResult().getAllErrors().forEach((error) -> {
+					String fieldName = ((FieldError) error).getField();
+					String errorMessage = error.getDefaultMessage();
+					errors.put(fieldName, errorMessage);
+				});
+				
+			return errors;
+		}
+		
 	/*
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteTurmaComConferencia(@PathVariable Integer id) {
@@ -99,5 +122,6 @@ public class TurmaController {
 		
 	}
 	*/
+	
 	
 }
