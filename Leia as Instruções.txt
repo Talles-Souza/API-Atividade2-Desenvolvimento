@@ -39,5 +39,18 @@ Ex:
 			
 		return errors;
 	}
+5 - Por no custom exception handle
 
-5 - Testar no Insomnia e corrrigir futuros bugs.
+@Override
+	protected ResponseEntity<Object> handleMissingServletRequestParameter(
+	  MissingServletRequestParameterException ex, HttpHeaders headers, 
+	  HttpStatus status, WebRequest request) {
+	    List<String> details = new ArrayList<>();
+details.add(ex.getLocalizedMessage());
+        details.add("Parâmetro não processado: " + ex.getParameterName());
+    	ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), 
+    			"Falha na Validação dos Dados da Requisição", details);
+    	return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+	}
+	
+6 - Testar no Insomnia e corrrigir futuros bugs.
